@@ -96,16 +96,23 @@ List any direct socket-level or remote-shell connections (as distinct from HTTP/
 |---|---|---|---|---|
 
 ## 6. Integration Landscape Diagram
-Produce a simple Mermaid diagram (fenced ` ```mermaid ` block, `flowchart LR` or `flowchart TD`) that visually consolidates the findings from sections 3, 4, 5, and 7 (Autosys) into one picture per module, plus one consolidated cross-application diagram if there are multiple modules.
+Produce a diagram that visually consolidates the findings from sections 3, 4, 5, and 7 (Autosys) into one picture per module, plus one consolidated cross-application diagram if there are multiple modules. **The diagram must be delivered as a standalone `.svg` file embedded as an image**, so it displays correctly for anyone viewing the report — including people without a Mermaid renderer/plugin (plain markdown viewers, wikis, PDF exports, email).
 
-Rules for the diagram:
+**Content rules (apply regardless of rendering method below):**
 - Center node = this module/application.
 - Nodes on the **left/top** = inbound consumers — who calls the endpoints listed in section 3 (other internal apps, external partners, UI layer, "unknown external caller" if not determinable).
 - Nodes on the **right/bottom** = outbound integrations — upstream systems from section 4 (REST/SOAP/JMS/Kafka/DB), TCP/SSH targets from section 5, and Autosys job targets from section 7.
 - Label every arrow with the protocol (`REST`, `SOAP`, `JDBC`, `JMS`, `SSH`, `SFTP`, `Kafka`, etc.) — do not leave arrows unlabeled.
 - Keep it high-level and readable: group by system, not by individual endpoint. If there are more than ~15-20 endpoints to one system, collapse them into a single labeled edge (e.g. "12 REST endpoints") rather than drawing every one.
 - Do not fabricate a connection that isn't backed by a finding in sections 3-5/7 — if inbound consumers can't be determined from the repo, show the module with no inbound arrows and note that in the text below the diagram, rather than guessing.
-- Follow with 2-3 sentences of plain-text explanation of the diagram, not a repeat of the tables.
+
+**Rendering steps — try in this order, use whichever succeeds:**
+1. Author the diagram as Mermaid source first (`flowchart LR` or `TD`) and save it to `_analysis/diagrams/<module-name>-integration.mmd` — this is your working source and stays editable/diffable for future updates.
+2. Attempt to render that `.mmd` file to SVG using the Mermaid CLI, e.g. `npx -y @mermaid-js/mermaid-cli -i _analysis/diagrams/<module-name>-integration.mmd -o _analysis/diagrams/<module-name>-integration.svg -b transparent`. Save the resulting `.svg` alongside the `.mmd`.
+3. **If step 2 fails** (no network/npm access, tool unavailable, offline environment), hand-author the diagram directly as raw SVG XML instead — simple boxes for nodes, lines/arrowheads for edges, `<text>` labels — following the same content rules above. Save it to the same `_analysis/diagrams/<module-name>-integration.svg` path. This guarantees a viewable image even with zero external tooling.
+4. Either way, the final report must reference the SVG as an embedded image: `![Integration Diagram — <module name>](diagrams/<module-name>-integration.svg)`, placed directly in `_analysis/FINAL-REPORT.md` at this section. Do not just paste a Mermaid code fence as the final deliverable — the fence is only the intermediate source from step 1.
+- Follow the embedded diagram with 2-3 sentences of plain-text explanation, not a repeat of the tables.
+- If multiple diagrams are produced (per-module + consolidated), embed all of them here, each with its own caption identifying which module/scope it covers.
 
 ## 7. Autosys Batch Jobs & Shell Scripts
 For every `.jil` job definition and every shell/batch script it invokes (directly or transitively):
