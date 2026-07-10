@@ -95,7 +95,19 @@ List any direct socket-level or remote-shell connections (as distinct from HTTP/
 | Host/Port config key | Protocol | Purpose | Configured in | Credential source |
 |---|---|---|---|---|
 
-## 6. Autosys Batch Jobs & Shell Scripts
+## 6. Integration Landscape Diagram
+Produce a simple Mermaid diagram (fenced ` ```mermaid ` block, `flowchart LR` or `flowchart TD`) that visually consolidates the findings from sections 3, 4, 5, and 7 (Autosys) into one picture per module, plus one consolidated cross-application diagram if there are multiple modules.
+
+Rules for the diagram:
+- Center node = this module/application.
+- Nodes on the **left/top** = inbound consumers — who calls the endpoints listed in section 3 (other internal apps, external partners, UI layer, "unknown external caller" if not determinable).
+- Nodes on the **right/bottom** = outbound integrations — upstream systems from section 4 (REST/SOAP/JMS/Kafka/DB), TCP/SSH targets from section 5, and Autosys job targets from section 7.
+- Label every arrow with the protocol (`REST`, `SOAP`, `JDBC`, `JMS`, `SSH`, `SFTP`, `Kafka`, etc.) — do not leave arrows unlabeled.
+- Keep it high-level and readable: group by system, not by individual endpoint. If there are more than ~15-20 endpoints to one system, collapse them into a single labeled edge (e.g. "12 REST endpoints") rather than drawing every one.
+- Do not fabricate a connection that isn't backed by a finding in sections 3-5/7 — if inbound consumers can't be determined from the repo, show the module with no inbound arrows and note that in the text below the diagram, rather than guessing.
+- Follow with 2-3 sentences of plain-text explanation of the diagram, not a repeat of the tables.
+
+## 7. Autosys Batch Jobs & Shell Scripts
 For every `.jil` job definition and every shell/batch script it invokes (directly or transitively):
 
 | Autosys job name | JIL file | Script invoked (path) | Machine/box it runs on | Schedule/trigger (condition, calendar) | Purpose (what it does) | Upstream/downstream systems touched | Credentials/env source |
@@ -107,7 +119,7 @@ For each script, additionally document in prose:
 - Job dependency chain — which Autosys jobs this one depends on (`condition:` in JIL) and which jobs depend on it
 - Whether the script assumes a specific OS/shell (`ksh` vs `bash`), specific mounted drives, or an interactive terminal
 
-## 7. Containerization Readiness — Areas Requiring Attention
+## 8. Containerization Readiness — Areas Requiring Attention
 Call out anything that will need remediation before/while containerizing, e.g.:
 - Hardcoded file system paths, local disk writes, or in-memory session state that won't survive pod restarts/scaling
 - Use of local/embedded caches without externalization
@@ -122,7 +134,7 @@ Call out anything that will need remediation before/while containerizing, e.g.:
 - **Autosys/scheduler migration**: Autosys has no container-native equivalent — flag every job for a target pattern (Kubernetes CronJob, Argo Workflows, Airflow, etc.), and call out scripts that assume a persistent Autosys agent host, local mounted drives, or another job's output already sitting on local disk (breaks in ephemeral containers)
 - Shell scripts that assume tools pre-installed on the host (Oracle client, `sqlplus`, specific JDK path, `ksh`) that must be added to the container image explicitly
 
-## 8. Internal / Non-Artifactory Dependencies
+## 9. Internal / Non-Artifactory Dependencies
 Inspect all `pom.xml` (and `build.gradle`/`ivy.xml` if present) across modules and list any dependency **not** resolved from the centralized/corporate Artifactory repository, e.g.:
 - `<scope>system</scope>` dependencies with local `<systemPath>`
 - Dependencies pointing to non-standard `<repository>` entries (other than the configured central/corporate repo)
@@ -132,7 +144,7 @@ Inspect all `pom.xml` (and `build.gradle`/`ivy.xml` if present) across modules a
 | Dependency (groupId:artifactId:version) | Declared in (file) | Source (systemPath / repo URL / local jar) | Risk/Note |
 |---|---|---|---|
 
-## 9. Duplicate & Unused Dependencies
+## 10. Duplicate & Unused Dependencies
 Inspect all dependency manifests across modules — `pom.xml` (including parent/child and `<dependencyManagement>`), `build.gradle`, and front-end `package.json`/`package-lock.json` — and identify waste/risk in what's declared:
 
 **Duplicates**
@@ -161,4 +173,4 @@ State your confidence honestly: for "unused," note this is based on static usage
 - Use tables wherever structured data is requested above.
 - Keep prose sections concise and technical — this report is for engineering leadership and platform/DevOps teams, not an executive audience.
 - If the repository contains multiple independent applications, produce one full report per application, followed by a short cross-application summary (shared upstreams, shared dependencies, shared infra, shared Autosys boxes).
-- Follow the "Execution Strategy — Batch Processing" above for any repository large enough that the report would otherwise be truncated. The definition of "done" is: manifest fully checked off AND `_analysis/FINAL-REPORT.md` exists with all 9 sections populated for every module — a partial report is not an acceptable final answer.
+- Follow the "Execution Strategy — Batch Processing" above for any repository large enough that the report would otherwise be truncated. The definition of "done" is: manifest fully checked off AND `_analysis/FINAL-REPORT.md` exists with all 10 sections populated for every module — a partial report is not an acceptable final answer.
