@@ -132,6 +132,28 @@ Inspect all `pom.xml` (and `build.gradle`/`ivy.xml` if present) across modules a
 | Dependency (groupId:artifactId:version) | Declared in (file) | Source (systemPath / repo URL / local jar) | Risk/Note |
 |---|---|---|---|
 
+## 9. Duplicate & Unused Dependencies
+Inspect all dependency manifests across modules — `pom.xml` (including parent/child and `<dependencyManagement>`), `build.gradle`, and front-end `package.json`/`package-lock.json` — and identify waste/risk in what's declared:
+
+**Duplicates**
+- Same `groupId:artifactId` declared with **different versions** across modules/POMs (version conflict risk, not just redundancy) — note which version actually wins after Maven/Gradle resolution
+- Same `groupId:artifactId:version` declared redundantly in a child POM that's already inherited from a parent/BOM
+- Functionally overlapping libraries doing the same job (e.g., two JSON libraries, two logging facades, two HTTP client libraries) even if `artifactId` differs
+- For npm: duplicate packages at different versions visible in `package-lock.json`/`node_modules` tree (note only material duplicates, not routine transitive noise)
+
+| Dependency | Versions found | Declared in (files) | Resolved/winning version | Conflict risk |
+|---|---|---|---|---|
+
+**Unused**
+- Dependencies declared in the build file but with **no import/usage found anywhere in the source tree** (search actual code usage, not just declaration — a dependency can be a transitive requirement of another one you *do* use, so verify before flagging)
+- Dependencies whose only usage was in code that's since been commented out, deleted, or is dead/unreachable code
+- devDependencies/test-scoped dependencies mistakenly left in a runtime/compile scope
+
+| Dependency | Declared in (file) | Scope | Evidence of non-use (what you checked) | Recommendation |
+|---|---|---|---|---|
+
+State your confidence honestly: for "unused," note this is based on static usage search within the repo — reflection-based, dynamically-loaded, or plugin-discovered dependencies (e.g. JDBC drivers, SPI implementations, Spring auto-configuration starters) can appear unused but are load-bearing. Flag these separately as **"declared but not directly imported — verify before removing (possible reflective/SPI use)"** rather than recommending outright removal.
+
 # Output Rules
 
 - Use only information found in the repository. If something cannot be determined, write **"Not found in repository — verify with team"** rather than inferring.
@@ -139,4 +161,4 @@ Inspect all `pom.xml` (and `build.gradle`/`ivy.xml` if present) across modules a
 - Use tables wherever structured data is requested above.
 - Keep prose sections concise and technical — this report is for engineering leadership and platform/DevOps teams, not an executive audience.
 - If the repository contains multiple independent applications, produce one full report per application, followed by a short cross-application summary (shared upstreams, shared dependencies, shared infra, shared Autosys boxes).
-- Follow the "Execution Strategy — Batch Processing" above for any repository large enough that the report would otherwise be truncated. The definition of "done" is: manifest fully checked off AND `_analysis/FINAL-REPORT.md` exists with all 8 sections populated for every module — a partial report is not an acceptable final answer.
+- Follow the "Execution Strategy — Batch Processing" above for any repository large enough that the report would otherwise be truncated. The definition of "done" is: manifest fully checked off AND `_analysis/FINAL-REPORT.md` exists with all 9 sections populated for every module — a partial report is not an acceptable final answer.
