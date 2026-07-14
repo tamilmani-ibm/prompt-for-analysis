@@ -1,114 +1,76 @@
-# Summary Generator Toolkit
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Meeting Summary Template (Outlook-ready)</title>
+</head>
+<body style="margin:0; padding:24px; background-color:#f4f5f7; font-family:Calibri, Arial, sans-serif;">
 
-A reusable guide for turning raw context (chat threads, emails, or meeting notes) into clear, structured summaries. Paste your context under the relevant section's "Input" placeholder and follow the format.
+<div style="max-width:680px; margin:0 auto; background-color:#ffffff; border:1px solid #e1e4e8; border-radius:6px; overflow:hidden;">
 
----
+  <!-- Header -->
+  <div style="background-color:#2b579a; padding:20px 28px;">
+    <h1 style="margin:0; color:#ffffff; font-size:20px; font-family:Calibri, Arial, sans-serif;">Meeting Summary — [Meeting Title]</h1>
+    <p style="margin:6px 0 0 0; color:#d6e0f0; font-size:13px; font-family:Calibri, Arial, sans-serif;">[Date] &nbsp;|&nbsp; [Duration] &nbsp;|&nbsp; Attendees: [Names]</p>
+  </div>
 
-## 1. Message / Chat Summary
+  <div style="padding:24px 28px;">
 
-**Use for:** Slack threads, group chats, WhatsApp/Teams conversations.
+    <!-- Agenda -->
+    <h2 style="font-size:15px; color:#2b579a; border-bottom:2px solid #2b579a; padding-bottom:6px; margin-top:0;">Agenda / Topics Discussed</h2>
+    <ol style="margin:10px 0 20px 0; padding-left:20px; font-size:14px; color:#333333; line-height:1.6;">
+      <li>Topic 1</li>
+      <li>Topic 2</li>
+      <li>Topic 3</li>
+    </ol>
 
-**Input:**
-```
-[Paste raw message thread here]
-```
+    <!-- Key Discussion Points -->
+    <h2 style="font-size:15px; color:#2b579a; border-bottom:2px solid #2b579a; padding-bottom:6px;">Key Discussion Points</h2>
+    <ul style="margin:10px 0 20px 0; padding-left:20px; font-size:14px; color:#333333; line-height:1.6;">
+      <li>Point 1 — <i>raised by [Name]</i></li>
+      <li>Point 2 — <i>raised by [Name]</i></li>
+    </ul>
 
-**Output format:**
-```markdown
-### Chat Summary — [Topic/Channel Name]
-**Participants:** [Names]
-**Date/Time:** [If known]
+    <!-- Decisions -->
+    <h2 style="font-size:15px; color:#2b579a; border-bottom:2px solid #2b579a; padding-bottom:6px;">Decisions Made</h2>
+    <table style="width:100%; border-collapse:collapse; margin:10px 0 20px 0; font-size:14px;">
+      <tr>
+        <td style="background-color:#eaf1fb; border-left:4px solid #2b579a; padding:10px 14px; color:#333333;">Decision 1 — brief description</td>
+      </tr>
+    </table>
 
-**Key Points:**
-- Point 1
-- Point 2
+    <!-- Action Items -->
+    <h2 style="font-size:15px; color:#2b579a; border-bottom:2px solid #2b579a; padding-bottom:6px;">Action Items</h2>
+    <table style="width:100%; border-collapse:collapse; margin:10px 0 20px 0; font-size:13px;">
+      <tr style="background-color:#2b579a;">
+        <th style="text-align:left; padding:8px 12px; color:#ffffff; font-weight:600;">Task</th>
+        <th style="text-align:left; padding:8px 12px; color:#ffffff; font-weight:600;">Owner</th>
+        <th style="text-align:left; padding:8px 12px; color:#ffffff; font-weight:600;">Due Date</th>
+      </tr>
+      <tr style="background-color:#f7f9fc;">
+        <td style="padding:8px 12px; border-bottom:1px solid #e1e4e8; color:#333333;">Task 1</td>
+        <td style="padding:8px 12px; border-bottom:1px solid #e1e4e8; color:#333333;">[Owner]</td>
+        <td style="padding:8px 12px; border-bottom:1px solid #e1e4e8; color:#333333;">[Date]</td>
+      </tr>
+      <tr>
+        <td style="padding:8px 12px; border-bottom:1px solid #e1e4e8; color:#333333;">Task 2</td>
+        <td style="padding:8px 12px; border-bottom:1px solid #e1e4e8; color:#333333;">[Owner]</td>
+        <td style="padding:8px 12px; border-bottom:1px solid #e1e4e8; color:#333333;">[Date]</td>
+      </tr>
+    </table>
 
-**Decisions Made:**
-- Decision 1
+    <!-- Next Steps -->
+    <h2 style="font-size:15px; color:#2b579a; border-bottom:2px solid #2b579a; padding-bottom:6px;">Next Steps</h2>
+    <p style="font-size:14px; color:#333333; line-height:1.6; margin:10px 0 0 0;">[Next meeting date, or TBD]</p>
 
-**Open Questions / Unresolved:**
-- Question 1
+  </div>
 
-**Action Items:**
-- [ ] Task — Owner — Due date
-```
+  <!-- Footer -->
+  <div style="background-color:#f4f5f7; padding:14px 28px; font-size:12px; color:#888888; text-align:center;">
+    Generated summary — please review before sending
+  </div>
 
----
+</div>
 
-## 2. Email / Mail Summary
-
-**Use for:** Single emails or email threads/chains.
-
-**Input:**
-```
-[Paste email(s) here]
-```
-
-**Output format:**
-```markdown
-### Email Summary — [Subject Line]
-**From:** [Sender] | **To:** [Recipient(s)]
-**Date:** [Date]
-
-**Purpose of Email:**
-One or two lines on why this email was sent.
-
-**Key Information:**
-- Detail 1
-- Detail 2
-
-**Requests/Asks:**
-- What the sender wants from the recipient
-
-**Action Items:**
-- [ ] Task — Owner — Due date
-
-**Suggested Reply Tone:** [e.g., Confirm, Decline, Ask for clarification]
-```
-
----
-
-## 3. Meeting Summary
-
-**Use for:** Meeting transcripts, notes, or recordings (transcribed).
-
-**Input:**
-```
-[Paste meeting transcript/notes here]
-```
-
-**Output format:**
-```markdown
-### Meeting Summary — [Meeting Title]
-**Date:** [Date] | **Attendees:** [Names]
-**Duration:** [If known]
-
-**Agenda / Topics Discussed:**
-1. Topic 1
-2. Topic 2
-
-**Key Discussion Points:**
-- Point 1 (mention who raised it, if relevant)
-- Point 2
-
-**Decisions Made:**
-- Decision 1
-
-**Action Items:**
-| Task | Owner | Due Date |
-|------|-------|----------|
-|      |       |          |
-
-**Next Steps / Follow-up Meeting:** [Date or TBD]
-```
-
----
-
-## How to Use This File
-
-1. Pick the section matching your content type (message, email, or meeting).
-2. Paste the raw context into the **Input** block.
-3. Ask Claude (or any assistant): *"Summarize this using the [message/email/meeting] format from my template."*
-4. Fill in / adjust the generated output as needed.
-
-**Tip:** For recurring use, keep this file handy and just swap the pasted content — the structure stays consistent every time, making summaries easy to scan and compare across weeks.
+</body>
+</html>
