@@ -6,6 +6,7 @@
     <feature>jndi-1.0</feature>
   </featureManager>
 
+  <logging traceSpecification="com.ibm.ws.jndi.*=all:com.ibm.ws.container.service.naming.*=all:com.ibm.ws.resource.*=all:com.ibm.ws.jca.*=all:Naming=all" />
   <resourceAdapter autoStart="true" id="solace"
       location="${shared.resource.dir}/solace/sol-jms-jakarta-ra-10.30.0.rar">
     <properties.solace
