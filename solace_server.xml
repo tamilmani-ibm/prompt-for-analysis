@@ -1,0 +1,41 @@
+<server description="Solace JMS - Jakarta">
+
+  <featureManager>
+    <feature>connectors-2.1</feature>
+    <feature>messaging-3.1</feature>
+    <feature>jndi-1.0</feature>
+  </featureManager>
+
+  <resourceAdapter autoStart="true" id="solace"
+      location="${shared.resource.dir}/solace/sol-jms-jakarta-ra-10.30.0.rar">
+    <properties.solace
+        ConnectionURL="tcps://your-host:55443"
+        MessageVPN="your-vpn"
+        UserName="your-username"
+        Password="your-password"
+        ExtendedProps="Solace_JMS_SSL_KeyStore=${server.config.dir}/resources/security/keystore.jks;Solace_JMS_SSL_KeyStoreFormat=JKS;Solace_JMS_SSL_KeyStorePassword=yourKeyStorePwd;Solace_JMS_SSL_TrustStore=${server.config.dir}/resources/security/truststore.jks;Solace_JMS_SSL_TrustStoreFormat=JKS;Solace_JMS_SSL_TrustStorePassword=yourTrustStorePwd;Solace_JMS_JNDI_ConnectRetries=3;Solace_JMS_JNDI_ConnectRetriesPerHost=2;Solace_JMS_JNDI_ConnectTimeout=30000;Solace_JMS_JNDI_ReadTimeout=10000;Solace_JMS_JNDI_ReconnectRetries=20;Solace_JMS_JNDI_ReconnectRetryWait=3000"/>
+  </resourceAdapter>
+
+  <jmsConnectionFactory id="solaceCF" jndiName="jms/solaceCF" connectionManagerRef="solaceCM">
+    <properties.solace ConnectionFactoryJndiName="JNDI/Sol/CF"/>
+  </jmsConnectionFactory>
+
+  <connectionManager id="solaceCM" maxPoolSize="10" minPoolSize="2"/>
+
+  <jmsQueue id="solaceRequestQueue" jndiName="jms/solaceRequestQueue">
+    <properties.solace Destination="JNDI/Sol/Q/requests"/>
+  </jmsQueue>
+
+  <jmsQueue id="solaceReplyQueue" jndiName="jms/solaceReplyQueue">
+    <properties.solace Destination="JNDI/Sol/Q/replies"/>
+  </jmsQueue>
+
+  <!-- Inbound MDB activation, note destinationType now uses jakarta.jms -->
+  <jmsActivationSpec id="jms/solaceActivationSpec">
+    <properties.solace
+        connectionFactoryJndiName="JNDI/Sol/CF"
+        destination="JNDI/Sol/Q/requests"
+        destinationType="jakarta.jms.Queue"/>
+  </jmsActivationSpec>
+
+</server>
